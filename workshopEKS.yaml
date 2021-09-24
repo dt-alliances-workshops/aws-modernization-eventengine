@@ -14,7 +14,7 @@ Resources:
   ModernizationEKS:
     Type: AWS::CloudFormation::Stack
     Properties:
-      TemplateURL: https://aws-quickstart.s3.us-east-1.amazonaws.com/quickstart-amazon-eks/templates/amazon-eks-master-existing-vpc.template.yaml
+      TemplateURL: https://s3.amazonaws.com/aws-quickstart/quickstart-amazon-eks/templates/amazon-eks-entrypoint-existing-vpc.template.yaml
       Parameters:
         RemoteAccessCIDR: 0.0.0.0/0
         NodeInstanceType: m5.xlarge
