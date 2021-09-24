@@ -1,10 +1,19 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: AWS CloudFormation Template for the AWS Modernization workshop with Dynatrace.
   You will be billed for the AWS resources used if you create a stack from this template.
-Mappings:
-  Common:
-    DTOrdersAmi:
-      Name: ami-085925f297f89fce1 #ami-003634241a8fcdec0  # us-west-2 - ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-20200408 - ami-003634241a8fcdec0
+Parameters:
+  DynatraceBaseURL:
+    Description: Your Dynatrace Base URL (ex. https://ABC.live.dynatrace.com)
+    Type: String
+  DynatracePaasToken:
+    Description: Your Dynatrace PaaS token
+    Type: String
+Mappings: 
+  RegionMap: 
+    us-east-1: 
+      AMI: ami-085925f297f89fce1
+    us-west-2: 
+      AMI: ami-003634241a8fcdec0
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -79,12 +88,9 @@ Resources:
     Type: AWS::EC2::Instance
     DependsOn: AttachGateway
     Properties:
-      InstanceType: t3.xlarge
+      InstanceType: m5.xlarge
       KeyName: ee-default-keypair
-      ImageId: !FindInMap
-        - Common
-        - DTOrdersAmi
-        - Name
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
           Value: dt-orders-monolith
@@ -99,6 +105,16 @@ Resources:
         Fn::Join:
           - ''
           - - "#!/bin/bash\n"
+            - wget -O Dynatrace-OneAgent.sh "
+            - !Ref 'DynatraceBaseURL'
+            - /api/v1/deployment/installer/agent/unix/default/latest?Api-Token=
+            - !Ref 'DynatracePaasToken'
+            - "&arch=x86&flavor=default\"\n"
+            - "/bin/sh Dynatrace-OneAgent.sh"
+            - " --set-app-log-content-access=true"
+            - " --set-infra-only=false"
+            - " --set-host-name=dt-orders-monolith"
+            - " --set-host-group=dt-orders-monolith\n"            
             - "sudo apt-get update\n"
             - "sudo apt-get install -y git\n"
             - "git clone https://github.com/dt-alliances-workshops/aws-modernization-dt-orders-setup.git /home/ubuntu/aws-modernization-dt-orders-setup\n"
