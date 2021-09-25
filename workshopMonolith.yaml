@@ -3,11 +3,15 @@ Description: AWS CloudFormation Template for the AWS Modernization workshop with
   You will be billed for the AWS resources used if you create a stack from this template.
 Parameters:
   DynatraceBaseURL:
-    Description: Your Dynatrace Base URL (ex. https://ABC.live.dynatrace.com)
+    Description: Your Dynatrace Base URL (example https://ABC.live.dynatrace.com)
     Type: String
   DynatracePaasToken:
     Description: Your Dynatrace PaaS token
     Type: String
+  DynatraceHostName:
+    Description: Hostname used by the Dynatrace OneAgent
+    Type: String
+    Default: dt-orders-monolith
 Mappings: 
   RegionMap: 
     us-east-1: 
@@ -101,7 +105,7 @@ Resources:
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
-          Value: dt-orders-monolith
+          Value: !Ref 'DynatraceHostName'
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
