@@ -12,8 +12,16 @@ Mappings:
   RegionMap: 
     us-east-1: 
       AMI: ami-085925f297f89fce1
+    us-east-2: 
+      AMI: ami-07c1207a9d40bc3bd
+    us-west-1: 
+      AMI: ami-0f56279347d2fa43e
     us-west-2: 
       AMI: ami-003634241a8fcdec0
+    ap-southeast-1:
+      AMI: ami-0f7719e8b7ba25c61
+    ap-southeast-2:
+      AMI: ami-04fcc97b5f6edcd89
 Resources:
   VPC:
     Type: AWS::EC2::VPC
