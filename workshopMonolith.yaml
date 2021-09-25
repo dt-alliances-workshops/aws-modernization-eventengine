@@ -12,6 +12,10 @@ Parameters:
     Description: Hostname used by the Dynatrace OneAgent
     Type: String
     Default: dt-orders-monolith
+  KeyPairName:
+    Description: KeyPair name for the EC2 instance
+    Type: String
+    Default: ee-default-keypair
 Mappings: 
   RegionMap: 
     us-east-1: 
@@ -101,7 +105,7 @@ Resources:
     DependsOn: AttachGateway
     Properties:
       InstanceType: m5.xlarge
-      KeyName: ee-default-keypair
+      KeyName: !Ref 'KeyPairNames'
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
