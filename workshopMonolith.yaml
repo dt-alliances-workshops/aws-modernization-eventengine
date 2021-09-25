@@ -8,14 +8,14 @@ Parameters:
   DynatracePaasToken:
     Description: Your Dynatrace PaaS token
     Type: String
-  DynatraceHostName:
-    Description: Hostname used by the Dynatrace OneAgent
-    Type: String
-    Default: dt-orders-monolith
   KeyPairName:
     Description: KeyPair name for the EC2 instance
     Type: String
     Default: ee-default-keypair
+  OneAgentHostName:
+    Description: Hostname used by the Dynatrace OneAgent
+    Type: String
+    Default: dt-orders-monolith
 Mappings: 
   RegionMap: 
     us-east-1: 
@@ -105,11 +105,11 @@ Resources:
     DependsOn: AttachGateway
     Properties:
       InstanceType: m5.xlarge
-      KeyName: !Ref 'KeyPairNames'
+      KeyName: !Ref 'KeyPairName'
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
-          Value: !Ref 'DynatraceHostName'
+          Value: !Ref 'OneAgentHostName'
       BlockDeviceMappings:
         - DeviceName: /dev/sda1
           Ebs:
