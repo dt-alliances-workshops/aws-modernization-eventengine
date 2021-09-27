@@ -121,16 +121,24 @@ Resources:
         Fn::Join:
           - ''
           - - "#!/bin/bash\n"
+            - "DT_BASEURL="
+            - !Ref DynatraceBaseURL
+            - "\n"
+            - "if [ \"${DT_BASEURL: -1}\" == \"/\" ]; then"
+            - " DT_BASEURL=\"$(echo ${DT_BASEURL%?})\"; "
+            - "fi\n"
             - wget -O Dynatrace-OneAgent.sh "
-            - !Ref 'DynatraceBaseURL'
-            - /api/v1/deployment/installer/agent/unix/default/latest?Api-Token=
+            - ${DT_BASEURL}/api/v1/deployment/installer/agent/unix/default/latest?Api-Token=
             - !Ref 'DynatracePaasToken'
             - "&arch=x86&flavor=default\"\n"
             - "/bin/sh Dynatrace-OneAgent.sh"
             - " --set-app-log-content-access=true"
             - " --set-infra-only=false"
-            - " --set-host-name=dt-orders-monolith"
-            - " --set-host-group=dt-orders-monolith\n"            
+            - " --set-host-name="
+            - !Ref 'OneAgentHostName'
+            - " --set-host-group="
+            - !Ref 'OneAgentHostName'
+            - "\n"            
             - "sudo apt-get update\n"
             - "sudo apt-get install -y git\n"
             - "git clone https://github.com/dt-alliances-workshops/aws-modernization-dt-orders-setup.git /home/ubuntu/aws-modernization-dt-orders-setup\n"
