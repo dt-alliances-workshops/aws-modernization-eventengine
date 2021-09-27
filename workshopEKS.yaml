@@ -2,6 +2,12 @@ AWSTemplateFormatVersion: '2010-09-09'
 
 Description: This AWS CloudFormation Template configures a VPC, role, and EKS. 
 
+Parameters:
+  KeyPairName:
+    Description: KeyPair name for the EC2 instance
+    Type: String
+    Default: ee-default-keypair
+
 Resources:
 
   ModernizationVPC:
@@ -23,8 +29,7 @@ Resources:
         PublicSubnet2ID: !GetAtt ModernizationVPC.Outputs.PublicSubnet2
         PrivateSubnet1ID: !GetAtt ModernizationVPC.Outputs.PrivateSubnet1
         PrivateSubnet2ID: !GetAtt ModernizationVPC.Outputs.PrivateSubnet2
-        KeyPairName: ee-default-keypair
-        AdditionalEKSAdminRoleArn: !Ref EETeamRoleArn  
+        KeyPairName: !Ref KeyPairName
         ProvisionBastionHost: Disabled
         EKSPublicAccessEndpoint: Enabled
 
