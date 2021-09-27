@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: This AWS CloudFormation Template configures a VPC, role, and EKS. 
+
+Parameters:
+  KeyPairName:
+    Description: KeyPair name for the EC2 instance
+    Type: String
+    Default: ee-default-keypair
+
+Resources:
+
+  ModernizationVPC:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://modernization-workshop-bucket.s3-us-west-2.amazonaws.com/cfn/vpc/vpc.yaml
+      Parameters:
+        EnvironmentName: Workshop
+
+  ModernizationEKS:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: https://s3.amazonaws.com/aws-quickstart/quickstart-amazon-eks/templates/amazon-eks-entrypoint-existing-vpc.template.yaml
+      Parameters:
+        RemoteAccessCIDR: 0.0.0.0/0
+        NodeInstanceType: m5.xlarge
+        VPCID: !GetAtt ModernizationVPC.Outputs.VPC
+        PublicSubnet1ID: !GetAtt ModernizationVPC.Outputs.PublicSubnet1
+        PublicSubnet2ID: !GetAtt ModernizationVPC.Outputs.PublicSubnet2
+        PrivateSubnet1ID: !GetAtt ModernizationVPC.Outputs.PrivateSubnet1
+        PrivateSubnet2ID: !GetAtt ModernizationVPC.Outputs.PrivateSubnet2
+        KeyPairName: !Ref KeyPairName
+        AdditionalEKSAdminRoleArn: !Ref EETeamRoleArn
+        ProvisionBastionHost: Disabled
+        EKSPublicAccessEndpoint: Enabled
+
+Outputs: {}
