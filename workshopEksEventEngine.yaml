@@ -6,6 +6,7 @@ Parameters:
   EETeamRoleArn:
     Description: "ARN of the Team Role"
     Type: String
+    Default: EETeamRoleArn
   KeyPairName:
     Description: KeyPair name for the EC2 instance
     Type: String
