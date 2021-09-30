@@ -15,7 +15,8 @@ Parameters:
   ResourcePrefix:
     Description: Optional value to prefix resource names
     Type: String
-    Default: ""
+Conditions:
+  HasResourcePrefix: !Not [!Equals [!Ref ResourcePrefix, '']]
 Mappings:
   RegionMap: 
     us-east-1: 
@@ -32,8 +33,6 @@ Mappings:
       AMI: ami-04fcc97b5f6edcd89
     eu-central-1:
       AMI: ami-0e342d72b12109f91
-Conditions:
-  HasResourcePrefix: !Not [!Equals [!Ref ResourcePrefix, ""]]
 Resources:
   VPC:
     Type: AWS::EC2::VPC
@@ -41,7 +40,7 @@ Resources:
       CidrBlock: 10.0.0.0/24
       Tags:
         - Key: Name
-          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
+          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
   Subnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -50,13 +49,13 @@ Resources:
       MapPublicIpOnLaunch: true
       Tags:
         - Key: Name
-          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
+          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
   InternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
+          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
         - Key: Application
           Value: !Ref 'AWS::StackId'
   AttachGateway:
@@ -70,7 +69,7 @@ Resources:
       VpcId: !Ref 'VPC'
       Tags:
         - Key: Name
-          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
+          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
         - Key: Application
           Value: !Ref 'AWS::StackId'
   Route:
@@ -113,7 +112,7 @@ Resources:
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       Tags:
         - Key: Name
-          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
+          Value: !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
         - Key: Purpose
           Value: dynatrace-modernize-workshop
       BlockDeviceMappings:
@@ -149,7 +148,7 @@ Resources:
             - "sudo apt-get install -y git\n"
             - "git clone https://github.com/dt-alliances-workshops/aws-modernization-dt-orders-setup.git /home/ubuntu/aws-modernization-dt-orders-setup\n"
             - "cd /home/ubuntu/aws-modernization-dt-orders-setup\n"
-            - "sudo /home/ubuntu/aws-modernization-dt-orders-setup/provision-scripts/setup-host.sh dt-orders-monolith > /tmp/cloud-init-services.log\n"
+            - "sudo /home/ubuntu/aws-modernization-dt-orders-setup/provision-scripts/setup-host.sh dt-orders-services > /tmp/cloud-init-services.log\n"
       NetworkInterfaces:
         - GroupSet:
             - !Ref 'DTOrdersInstanceSecurityGroup'
