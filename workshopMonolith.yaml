@@ -141,9 +141,9 @@ Resources:
             - " --set-app-log-content-access=true"
             - " --set-infra-only=false"
             - " --set-host-name="
-            - !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
+            - !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
             - " --set-host-group="
-            - !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-services", dt-orders-services]
+            - !If [HasResourcePrefix, !Sub "${ResourcePrefix}-dt-orders-monolith", dt-orders-monolith]
             - "\n"            
             - "sudo apt-get update\n"
             - "sudo apt-get install -y git\n"
